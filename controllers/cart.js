@@ -10,6 +10,7 @@ require("dotenv/config");
 module.exports.addToCart = async (req, res, next) => {
   try {
     sequelize.sync().then(async () => {
+      let quantity = 1;
       let findQuery = {
         where: { ProductId: req.query.id, UserId: req.query.userId },
       };
@@ -17,7 +18,7 @@ module.exports.addToCart = async (req, res, next) => {
       let product = await Cart.findOne(findQuery);
 
       if (product) {
-        if (parseInt(req.body.quantity) === 0) {
+        if (parseInt(req.body.quantity) === 0) {  // also check for null
           let remove = await Cart.destroy(findQuery, product);
           if (remove) {
             return res.status(200).send({
@@ -32,27 +33,43 @@ module.exports.addToCart = async (req, res, next) => {
               data: [],
             });
           }
-        }
-        product.quantity = parseInt(req.body.quantity);
-        product.totalPrice = parseInt(req.body.totalPrice);
-        let updateCart = await Cart.update(req.body, findQuery);
-        if (updateCart) {
-          return res.status(200).send({
-            status: 200,
-            message: "Cart update",
-            data: {
-              result: product,
-            },
-          });
         } else {
-          return res.status(400).send({
-            status: 400,
-            message: "Error while updating",
-            data: [],
-          });
+             const oldQty = product.dataValues.quantity;
+             const totalPrice = product.dataValues.totalPrice + req.body.price;
+             quantity = oldQty + 1;
+            let body = {
+              quantity,
+              totalPrice: totalPrice,
+              ProductId:  req.body.ProductId,
+              UserId: req.body.UserId
+            } 
+            console.log('update body-->', body)
+          let updateCart = await Cart.update(body, findQuery);
+          if (updateCart) {
+            return res.status(200).send({
+              status: 200,
+              message: "Cart update",
+              data: {
+                result: product,
+              },
+            });
+          } else {
+            return res.status(400).send({
+              status: 400,
+              message: "Error while updating",
+              data: [],
+            });
+          }
         }
+       
       } else {
-        let cart = await Cart.create(req.body);
+         let body ={  
+         quantity,
+         totalPrice: req.body.price,
+         ProductId: req.body.ProductId,
+         UserId: req.body.UserId
+         }
+        let cart = await Cart.create(body);
         if (!cart) {
           return res.status(400).send({
             status: 400,
@@ -77,6 +94,7 @@ module.exports.ListCart = async (req, res, next) => {
   try {
     let findQuery = {
       where: { UserId: req.query.id },
+     
       include:{
         model: Product
       },
@@ -86,7 +104,7 @@ module.exports.ListCart = async (req, res, next) => {
       where:{ UserId : req.query.id },
       attributes:[
         [ Sequelize.literal('(select SUM(`totalPrice`) FROM shoppingease.carts  WHERE `UserId`=1)'), 'cartTotal']
-      ]
+      ],
     });
     if (list && cartTotal) {
       return res.status(200).send({
@@ -94,7 +112,7 @@ module.exports.ListCart = async (req, res, next) => {
         message: "Fetch Succesfuuly",
         data: {
           result: list,
-          cartTotal: cartTotal
+          cartTotal
         },
       });
     } else {
@@ -111,3 +129,7 @@ module.exports.ListCart = async (req, res, next) => {
     });
   }
 };
+
+
+// first time object chlu jaye ga 
+// agr 

@@ -5,6 +5,7 @@ const Product = require("./product");
 const ShopCategory = require("./storeCategory");
 const Markets = require("./market");
 const Category = require("./productCategory");
+const Cart = require("./cart");
 
 
 
@@ -86,5 +87,16 @@ Shop.belongsTo(ShopCategory);
 //shop and category relation
 Shop.hasMany(Category);
 Category.belongsTo(Shop);
+
+// User.hasMany(Cart, {
+//   as:'carts',
+//   foreignKey: "shop_id",
+// });
+// Cart.belongsTo(User,{
+//     as:'users',
+//     foreignKey: "shop_id",
+//   }
+// );
+
 
 module.exports = Shop;

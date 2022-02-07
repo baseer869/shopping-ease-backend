@@ -516,6 +516,13 @@
   "resolved" "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-2.0.0.tgz"
   "version" "2.0.0"
 
+"custom-id@^1.2.0":
+  "integrity" "sha512-lL59dGGzd5cYL6Z1NPlPo0Lze5t3JcWKOiaLupGhYUxpPWa5ZduL5rEggBWU4JT29wM429UgYIiY89qzL7iMmQ=="
+  "resolved" "https://registry.npmjs.org/custom-id/-/custom-id-1.2.0.tgz"
+  "version" "1.2.0"
+  dependencies:
+    "math-random" "^1.0.4"
+
 "data-uri-to-buffer@1":
   "integrity" "sha512-vKQ9DTQPN1FLYiiEEOQ6IBGFqvjCa5rSK3cWMy/Nespm5d/x3dGFT9UBZnkLxCwua/IXBi2TYnwTEpsOvhC4UQ=="
   "resolved" "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-1.2.0.tgz"
@@ -1513,6 +1520,11 @@
   "version" "3.1.0"
   dependencies:
     "semver" "^6.0.0"
+
+"math-random@^1.0.4":
+  "integrity" "sha512-rUxjysqif/BZQH2yhd5Aaq7vXMSx9NdEsQcyA07uEzIvxgI7zIr33gGsh+RU0/XjmQpCW7RsVof1vlkvQVCK5A=="
+  "resolved" "https://registry.npmjs.org/math-random/-/math-random-1.0.4.tgz"
+  "version" "1.0.4"
 
 "media-typer@0.3.0":
   "integrity" "sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g="

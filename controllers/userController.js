@@ -53,7 +53,11 @@ module.exports.register = async (req, res)=> {
 module.exports.login = async (req, res)  =>{
   sequelize.sync().then( async ()=>{
     const secret = process.env.SECRET;
-  const user = await User.findOne( { where: { email: req.body.email}});
+    let findQuery ={
+      where: { email: req.body.email},
+      attributes:['id', 'username', 'email','password']
+    }
+  const user = await User.findOne(findQuery);
 
   // check if user not found
   if (!user) {
@@ -61,17 +65,16 @@ module.exports.login = async (req, res)  =>{
   }
   // check for credentials
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
-    const token = jwt.sign({ role: user.role }, secret, {
+    const token = jwt.sign({ id: user.id }, secret, {
       expiresIn: "1d",
     });
-    return res.status(200).send({
-      code: 200,
-      email: user.email,
-      id: user.id,
-      userType: user.user_type,
+    let {id, username, email,  } = user;
+    return res.status(200).json({
+      code: 200,      
+      userId: id,
+      email: email, 
+      name: username,
       token,
-      email: user.email, 
-      name: user.username     
     });
   } else {
     return res.status(401).send({
@@ -101,4 +104,72 @@ module.exports.listOfRegisteredUser = async (req, res)=>{
 
 
 
+}
+
+module.exports.userInfo = async (req, res)=>{
+  sequelize.sync().then( async () =>{
+    try {
+     let findQuery ={
+       where:{id: req.query.id   },
+       attributes:['id', 'username', 'phone','address','addressTitle','state',]
+     }
+      const user = await User.findOne(findQuery);
+      if (!user) {
+        return res.status(400).json({
+          message: "Record not found",
+        });
+      } else if(user){
+      return res.status(200).send({
+        status: 200,
+        message:"Fetch succesffully",
+        user: user,
+      });
+    }       
+    } catch (error) {
+      return res.status(400).send({
+        status: 400,
+        message:"Server Error",
+      });
+    }
+
+  } )
+}
+
+
+
+module.exports.updateUser = async (req, res)=>{
+  sequelize.sync().then( async () =>{
+    try {
+     let findQuery ={
+       where:{id: req.body.id   },
+     }
+      const user = await User.findOne(findQuery);
+
+      if (!user) {
+        return res.status(400).json({
+          status: 400,
+          message: "Record not found",
+        });
+      } else if(user){
+         let isUserUpdated = await User.update(req.body, findQuery );
+         if(isUserUpdated){
+          return res.status(200).send({
+            status: 200,
+            message:"User updated Successfully",
+          });
+         } else {
+          return res.status(400).send({
+            status: 400,
+            message:"DB Error, try again",
+          });
+         }
+    }       
+    } catch (error) {
+      return res.status(400).send({
+        status: 400,
+        message:"Server Error",
+      });
+    }
+
+  } )
 }

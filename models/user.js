@@ -50,6 +50,11 @@ allowNull: false
     allowNull: true,
     defaultValue: null
   },
+  addressTitle:{
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null
+  },
   city: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -115,8 +120,8 @@ long: {
  User.hasMany(Cart)
 
  Cart.belongsTo(User)
-Product.hasMany(Cart, {
-  as:'carts'
-})
-Cart.belongsTo(Product)
+Product.hasMany(Cart);
+Cart.belongsTo(Product);
+
+
 module.exports = User;

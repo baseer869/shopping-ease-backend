@@ -50,3 +50,4 @@ app.listen(PORT, () => {
 });
 
 require('./config/db.config');
+console.log('app.js')

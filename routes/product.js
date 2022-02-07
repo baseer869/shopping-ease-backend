@@ -17,7 +17,10 @@ router.post(`${api}/product`,   product.addProduct );
 router.get(`${api}/listProduct`,   product.ListProduct );                             
 router.delete(`${api}/product`,   product.deleteProduct );                                  
 router.put(`${api}/product`, product.upload.single('attachement'),  product.updateProduct ); 
-router.put(`${api}/change-product-status`, product.changeProductStatus );                                       
+router.put(`${api}/change-product-status`, product.changeProductStatus ); 
+router.get(`${api}/searchProduct`, product.searchProduct ); 
+
+
 
 // product.upload.single('attachement'),
 
